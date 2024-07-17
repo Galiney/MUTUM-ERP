@@ -1,4 +1,6 @@
-from root import *
+from typing import Type, List, Dict, Optional
+import datetime, bcrypt, unittest
+
 
 class Department_sector:
   def __init__(self) -> None:
