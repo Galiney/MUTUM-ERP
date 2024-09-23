@@ -1,4 +1,7 @@
-from mutum_data_types import *
+from typing import Type, List, Dict
+import datetime
+
+from .liability import Liability
 
 class Expense(Liability):
     def __init__(self, value: float, code_name_country_number: str, incurrence_datetime: datetime) -> None:

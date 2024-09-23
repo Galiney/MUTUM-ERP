@@ -1,4 +1,6 @@
-from mutum_data_types import *
+from typing import Type, List, Dict
+
+from .iso_4217_ptbr import ISO_4217_ptbr
 
 class Money:
     def __init__(self, value: float, code_name_country_number: str) -> None:

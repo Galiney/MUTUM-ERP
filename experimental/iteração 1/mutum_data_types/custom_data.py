@@ -1,6 +1,7 @@
 from typing import List, Dict, Optional
+import re
 
-class Custom_data:# For a single static formatted data used in documents, prints and simple usage
+class Custom_data:  # For a single static formatted data used in documents, prints, and simple usage
     def __init__(self, name: str, format_counter: List[Dict[str, int]], size_wo_dividers: int, format_divider: Optional[List[Dict[str, str]]] = None) -> None:
         """
         Initializes the Custom_data object.
@@ -61,9 +62,16 @@ class Custom_data:# For a single static formatted data used in documents, prints
         self.__size_wo_dividers = size
 
     def set_value(self, value: str) -> None:
-        if len(value) != self.__size_wo_dividers:
+        # Remove the dividers if they are present
+        if self.__format_divider:
+            divider_regex = '|'.join(re.escape(d['divider']) for d in self.__format_divider)
+            raw_value = re.sub(divider_regex, '', value)
+        else:
+            raw_value = value
+        
+        if len(raw_value) != self.__size_wo_dividers:
             raise ValueError("Value length does not match the expected size")
-        self.__value = value
+        self.__value = raw_value
 
     # Method to format the stored data based on the provided format_counter and format_divider
     def format_data(self) -> str:
@@ -83,3 +91,38 @@ class Custom_data:# For a single static formatted data used in documents, prints
             if i < len(self.__format_divider):
                 formatted_data += self.__format_divider[i]['divider']
         return formatted_data
+    
+
+#HOW TO USE THE CUSTOM DATA, EXAMPLE:
+# # Generic method to add custom data
+# def add_custom_data(self, name: str, value: str, format_counter: List[Dict[str, int]], format_divider: Optional[List[Dict[str, str]]] = None) -> bool:
+#     """
+#     Generic method to add custom data.
+
+#     :param name: The name of the custom data being added.
+#     :param value: The value to be set for the custom data.
+#     :param format_counter: List of dictionaries representing segment lengths.
+#                            Each dictionary should have a 'name' key (optional) and a 'length' key.
+#     :param format_divider: List of dictionaries representing dividers.
+#                            Each dictionary should have a 'name' key (optional) and a 'divider' key.
+#     :return: True if the custom data is added successfully, otherwise raises an error.
+#     """
+#     try:
+#         custom_data = Custom_data(
+#             name=name,
+#             format_counter=format_counter,
+#             size_wo_dividers=sum(segment['length'] for segment in format_counter),  # Calculating size without dividers
+#             format_divider=format_divider
+#         )
+        
+#         # Set the value here
+#         custom_data.set_value(value)  # Set the custom data value
+        
+#         # Append the custom data to the appropriate list
+#         # This should be a specific list for the type of data, e.g., self.__emails, self.__gov_docs, etc.
+        
+#         logger.info(f"{name.capitalize()} added successfully: {custom_data.get_name()} - {custom_data.format_data()}")
+#         return True
+#     except ValueError as ve:
+#         logger.exception(f"Failed to format {name} data: %s", value)
+#         raise InvalidDataFormatError(f"Failed to format {name} data.") from ve

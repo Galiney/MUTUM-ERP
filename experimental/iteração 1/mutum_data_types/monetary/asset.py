@@ -1,4 +1,7 @@
-from mutum_data_types import *
+from typing import Type, List, Dict
+import datetime
+
+from .money import Money
 
 class Asset(Money):
     def __init__(self, value: float, code_name_country_number: str, acquisition_datetime: datetime) -> None:
