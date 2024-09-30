@@ -47,6 +47,9 @@ class Custom_data:  # For a single static formatted data used in documents, prin
 
     def get_value(self) -> str:
         return self.__value
+    
+    def get_custom_data(self) -> str:
+        return self.format_data()
 
     # Mutator methods (setters)
     def set_name(self, name: str) -> None:

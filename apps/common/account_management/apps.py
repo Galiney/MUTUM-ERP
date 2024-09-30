@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class CommonLoggingConfig(AppConfig):
+class AccountManagementConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'common_logging'
+    name = 'account_management'

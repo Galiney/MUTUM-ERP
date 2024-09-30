@@ -62,7 +62,7 @@ class User_account:
             email_data = Custom_data(
                 name='email',
                 format_counter=format_counter,
-                size_wo_dividers=len(email),  # Correct size without dividers
+                size_wo_dividers=len(email) - 1,  # Correct size without dividers
                 format_divider=format_divider
             )
 
@@ -80,7 +80,7 @@ class User_account:
 
     def get_emails(self) -> List[str]:
         # Return the formatted data for each email
-        return [email.get_value() for email in self.__emails]
+        return [email.get_custom_data() for email in self.__emails]
 
     # Government Document methods
     def add_gov_doc(self, name: str, format_counter: List[Dict[str, int]], size_wo_dividers: int, format_divider: Optional[List[Dict[str, str]]] = None, value: Optional[str] = None) -> bool:
