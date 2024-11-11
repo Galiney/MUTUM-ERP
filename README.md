@@ -1,3 +1,7 @@
+https://drive.google.com/file/d/1IfZTIqQ_qBCPeoeJT3j6nWqWGeSUDY2r/view?usp=drivesdk
+
+https://docs.google.com/document/d/1r46bZwFXROT7QeWmgPzcH4RqOnVwndeo/edit?usp=drivesdk&ouid=106747310322512672625&rtpof=true&sd=true
+
 # MUTUM-ERP
 Bem-vindo à documentação do Mutum ERP, um sistema de planejamento de recursos empresariais modular construído utilizando o framework Django. Este documento fornece uma visão geral da estrutura do projeto, explicando a organização dos aplicativos e a finalidade de cada componente.
 
