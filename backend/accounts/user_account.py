@@ -28,6 +28,7 @@ class User_account:
         self.__addresses: List[Custom_data] = []
         self.__username: Optional[str] = None
         self.__password_hash: Optional[str] = None
+        self.__enterprises: List[Enterprise] = []
 
     # Authorization check
     def __is_creator(self):

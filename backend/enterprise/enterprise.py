@@ -9,7 +9,9 @@ logging.basicConfig(level=logging.ERROR)
 
 class Enterprise:
     def __init__(self) -> None:
+        
         self.__department_sectors: List[Department_sector] = []
+        self.__teams: List[Team] = []
         self.__roles: List[Role] = []
         self.__employees: List[Employee] = []
         self.__gov_docs: List[Custom_data] = []

@@ -2,4 +2,4 @@ from . import *
 
 class Role:
   def __init__(self) -> None:
-    self.__employess: List[Employee] = []
+    self.__employees: List[Employee] = []
