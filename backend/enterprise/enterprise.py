@@ -1,8 +1,7 @@
 from typing import List
-from entitys import Employee
 from mutum_data_types import Expense, Revenue, Asset, Liability, Custom_data
 from .department_sector import Department_sector
-from .role import Role
+from designation import Role, Team
 import logging
 
 logging.basicConfig(level=logging.ERROR)
@@ -13,7 +12,8 @@ class Enterprise:
         self.__department_sectors: List[Department_sector] = []
         self.__teams: List[Team] = []
         self.__roles: List[Role] = []
-        self.__employees: List[Employee] = []
+        self.__employees = []
+
         self.__gov_docs: List[Custom_data] = []
         self.__assets: List[Asset] = []
         self.__liabilities: List[Liability] = []

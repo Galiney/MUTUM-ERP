@@ -1,9 +1,13 @@
 import logging
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Type
 import datetime
 import bcrypt
 import re
 from mutum_data_types import Custom_data
+from enterprise import Enterprise
+import copy
+from permissions import Permissions
+from logger import Logger  # Importando a classe Logger
 
 class InvalidEmailFormatError(Exception):
     """Custom exception raised when the email format is invalid."""
@@ -29,21 +33,24 @@ class User_account:
         self.__username: Optional[str] = None
         self.__password_hash: Optional[str] = None
         self.__enterprises: List[Enterprise] = []
+        self.__permissions: Type[Permissions]
+        self.logger = Logger()  # Inicializando o Logger
 
     # Authorization check
     def __is_creator(self):
         if self.__creator != self:
+            self.logger.warning("Unauthorized action attempt by non-creator.")
             raise UnauthorizedActionError("This action is only permitted by the account creator.")
 
     # Password methods
     def set_password(self, password: str) -> None:
         salt = bcrypt.gensalt()
         self.__password_hash = bcrypt.hashpw(password.encode(), salt)
-        logger.info("Password hash set successfully.")
+        self.logger.info("Password hash set successfully.")
 
     def check_password(self, password: str) -> bool:
         if self.__password_hash is None:
-            logger.warning("No password has been set for this account.")
+            self.logger.warning("No password has been set for this account.")
             return False
         return bcrypt.checkpw(password.encode(), self.__password_hash)
 
@@ -51,7 +58,7 @@ class User_account:
     def add_email(self, email: str) -> bool:
         self.__is_creator()
         if not self.is_valid_email(email):
-            logger.error("The email format is invalid: %s", email)
+            self.logger.error("The email format is invalid: %s", email)
             raise InvalidEmailFormatError("The email format is invalid according to RFC 5322 standards.")
 
         try:
@@ -71,10 +78,10 @@ class User_account:
 
             email_data.set_value(email)  # Set the email value
             self.__emails.append(email_data)
-            logger.info(f"Email added successfully: {email_data.get_name()} - {email_data.format_data()}")
+            self.logger.info(f"Email added successfully: {email_data.get_name()} - {email_data.format_data()}")
             return True
         except ValueError as ve:
-            logger.exception("Failed to format email data: %s", email)
+            self.logger.exception("Failed to format email data: %s", email)
             raise InvalidDataFormatError("Failed to format email data.") from ve
 
     def remove_email(self, email: str) -> bool:
@@ -83,9 +90,9 @@ class User_account:
         for email_data in self.__emails:
             if email_data.get_custom_data() == email:
                 self.__emails.remove(email_data)
-                logger.info("Email removed successfully: %s", email)
+                self.logger.info("Email removed successfully: %s", email)
                 return True
-        logger.warning("Attempted to remove non-existent email: %s", email)
+        self.logger.warning("Attempted to remove non-existent email: %s", email)
         return False
 
     def is_valid_email(self, email: str) -> bool:
@@ -108,10 +115,10 @@ class User_account:
             if value:
                 gov_doc.set_value(value)  # Set the government document value if provided
             self.__gov_docs.append(gov_doc)
-            logger.info(f"Government document added successfully: {gov_doc.get_name()}")
+            self.logger.info(f"Government document added successfully: {gov_doc.get_name()}")
             return True
         except ValueError as ve:
-            logger.exception("Failed to format government document data: %s", name)
+            self.logger.exception("Failed to format government document data: %s", name)
             raise InvalidDataFormatError("Failed to format government document data.") from ve
 
     def remove_gov_doc(self, name: str) -> bool:
@@ -120,18 +127,16 @@ class User_account:
         for doc in self.__gov_docs:
             if doc.get_name() == name:
                 self.__gov_docs.remove(doc)
-                logger.info("Government document removed successfully: %s", name)
+                self.logger.info("Government document removed successfully: %s", name)
                 return True
-        logger.warning("Attempted to remove non-existent government document: %s", name)
+        self.logger.warning("Attempted to remove non-existent government document: %s", name)
         return False
-
-    # Other methods follow a similar structure for add and remove...
 
     # Username methods
     def set_username(self, username: str) -> None:
         self.__is_creator()
         self.__username = username
-        logger.info(f"Username set successfully: {username}")
+        self.logger.info(f"Username set successfully: {username}")
 
     def get_username(self) -> Optional[str]:
         return self.__username
@@ -140,10 +145,10 @@ class User_account:
     def set_birthday(self, date: datetime.date) -> None:
         self.__is_creator()
         if date > datetime.date.today():
-            logger.error("Birthday cannot be set to a future date: %s", date)
+            self.logger.error("Birthday cannot be set to a future date: %s", date)
             raise ValueError("Birthday cannot be in the future")
         self.__birthday = date
-        logger.info(f"Birthday set successfully: {date}")
+        self.logger.info(f"Birthday set successfully: {date}")
 
     def get_birthday(self) -> Optional[datetime.date]:
         return self.__birthday
