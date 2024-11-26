@@ -1,18 +1,14 @@
 from typing import List
 from mutum_data_types import Expense, Revenue, Asset, Liability, Custom_data
 from .department_sector import Department_sector
-from designation import Role, Team
-import logging
+from .role import Role
+from .team import Team
+#import mutum_logging
 
-logging.basicConfig(level=logging.ERROR)
+#mutum_logging.basicConfig(level=mutum_logging.ERROR)
 
 class Enterprise:
     def __init__(self) -> None:
-        
-        self.__department_sectors: List[Department_sector] = []
-        self.__teams: List[Team] = []
-        self.__roles: List[Role] = []
-        self.__employees = []
 
         self.__gov_docs: List[Custom_data] = []
         self.__assets: List[Asset] = []
@@ -20,12 +16,18 @@ class Enterprise:
         self.__expenses: List[Expense] = []
         self.__revenues: List[Revenue] = []
 
+        #sistem
+        self.__department_sectors: List[Department_sector] = []
+        self.__teams: List[Team] = []
+        self.__roles: List[Role] = []
+        self.__employees = []
+
     def register_department_sector(self, department_sector: Department_sector) -> bool:
         try:
             self.__department_sectors.append(department_sector)
             return True
         except Exception as e:
-            logging.error(f"Error registering department/sector: {e}")
+            #mutum_logging.error(f"Error registering department/sector: {e}")
             return False
 
     def register_role(self, role: Role) -> bool:
@@ -33,15 +35,15 @@ class Enterprise:
             self.__roles.append(role)
             return True
         except Exception as e:
-            logging.error(f"Error registering role: {e}")
+            #mutum_logging.error(f"Error registering role: {e}")
             return False
 
-    def register_employee(self, employee: Employee) -> bool:
+    def register_employee(self, employee) -> bool:
         try:
             self.__employees.append(employee)
             return True
         except Exception as e:
-            logging.error(f"Error registering employee: {e}")
+            #mutum_logging.error(f"Error registering employee: {e}")
             return False
 
     def add_government_document(self, document: Custom_data) -> bool:
@@ -49,7 +51,7 @@ class Enterprise:
             self.__gov_docs.append(document)
             return True
         except Exception as e:
-            logging.error(f"Error adding government document: {e}")
+            #mutum_logging.error(f"Error adding government document: {e}")
             return False
 
     def add_asset(self, asset: Asset) -> bool:
@@ -57,7 +59,7 @@ class Enterprise:
             self.__assets.append(asset)
             return True
         except Exception as e:
-            logging.error(f"Error adding asset: {e}")
+            #mutum_logging.error(f"Error adding asset: {e}")
             return False
 
     def add_liability(self, liability: Liability) -> bool:
@@ -65,7 +67,7 @@ class Enterprise:
             self.__liabilities.append(liability)
             return True
         except Exception as e:
-            logging.error(f"Error adding liability: {e}")
+            #mutum_logging.error(f"Error adding liability: {e}")
             return False
 
     def add_expense(self, expense: Expense) -> bool:
@@ -73,7 +75,7 @@ class Enterprise:
             self.__expenses.append(expense)
             return True
         except Exception as e:
-            logging.error(f"Error adding expense: {e}")
+            #mutum_logging.error(f"Error adding expense: {e}")
             return False
 
     def add_revenue(self, revenue: Revenue) -> bool:
@@ -81,5 +83,5 @@ class Enterprise:
             self.__revenues.append(revenue)
             return True
         except Exception as e:
-            logging.error(f"Error adding revenue: {e}")
+            #mutum_logging.error(f"Error adding revenue: {e}")
             return False

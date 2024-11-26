@@ -13,7 +13,7 @@ apps:                     //Pasta raiz para todos os aplicativos do projeto.
 
   common:                 //Contém aplicativos essenciais para o funcionamento interno do sistema.
     common_accounts:      //Gerencia informações de conta e autenticação do usuário.
-    common_logging:       //Lida com lógica relacionada a logs do sistema.
+    common_mutum_logging:       //Lida com lógica relacionada a logs do sistema.
     common_notifications: //Gerencia a lógica de notificações do sistema.
     common_utilities:     //Fornece funções de utilidade geral.
     
