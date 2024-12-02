@@ -1,13 +1,18 @@
-import logging
 from typing import List, Optional, Dict, Type
 import datetime
-import bcrypt
 import re
+<<<<<<< HEAD:MUTUM_MPERP/backend/accounts/user_account.py
 from ..mutum_data_types import Custom_data
 from ..enterprise import Enterprise
 import copy
 from .permissions import Permissions
 #from logger import Logger  # Importando a classe Logger
+=======
+import bcrypt
+from mutum_data_types import Custom_data
+from .permissions import Permissions
+#from ..mutum_logging import Logger
+>>>>>>> bf3f5188e214c03e93141e591f941a302660265f:backend/accounts/user_account.py
 
 class InvalidEmailFormatError(Exception):
     """Custom exception raised when the email format is invalid."""
@@ -32,10 +37,18 @@ class User_account:
         self.__addresses: List[Custom_data] = []
         self.__username: Optional[str] = None
         self.__password_hash: Optional[str] = None
-        self.__enterprises: List[Enterprise] = []
+
+        #system part
+        self.__enterprises = []
         self.__permissions: Type[Permissions]
+<<<<<<< HEAD:MUTUM_MPERP/backend/accounts/user_account.py
         #self.logger = Logger()  # Inicializando o Logger
         print("user criado")
+=======
+        #self.__apps: List[Apps]
+
+        #self.logger = Logger() #inicializar aqui? 
+>>>>>>> bf3f5188e214c03e93141e591f941a302660265f:backend/accounts/user_account.py
 
     # Authorization check
     def __is_creator(self):
@@ -54,7 +67,11 @@ class User_account:
     def set_password(self, password: str) -> None:
         salt = bcrypt.gensalt()
         self.__password_hash = bcrypt.hashpw(password.encode(), salt)
+<<<<<<< HEAD:MUTUM_MPERP/backend/accounts/user_account.py
         #self.logger.info("Password hash set successfully.")
+=======
+       # self.logger.info("Password hash set successfully.")
+>>>>>>> bf3f5188e214c03e93141e591f941a302660265f:backend/accounts/user_account.py
 
     def check_password(self, password: str) -> bool:
         if self.__password_hash is None:
