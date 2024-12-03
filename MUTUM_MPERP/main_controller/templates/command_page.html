@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Executor</title>
+</head>
+<body>
+    <h1>Execute Command</h1>
+
+    <form id="command-form">
+        <label for="command-select">Command:</label>
+        <select id="command-select" name="command">
+            <option value="add">Add</option>
+            <option value="remove">Remove</option>
+            <option value="find">Find</option>
+        </select>
+
+        <label for="parameter-input">Parameter:</label>
+        <input type="text" id="parameter-input" name="parameter" placeholder="Enter parameter" required>
+
+        <button type="submit">Execute</button>
+    </form>
+
+    <h2>Response:</h2>
+    <pre id="response-output"></pre>
+
+    <script>
+        // JavaScript to handle form submission and send the request
+        document.getElementById("command-form").addEventListener("submit", async function(event) {
+            event.preventDefault();  // Prevent form from submitting normally
+            
+            // Get the values from the inputs
+            const command = document.getElementById("command-select").value;
+            const parameter = document.getElementById("parameter-input").value;
+
+            // Create the payload
+            const payload = {
+                command: command,
+                parameter: parameter
+            };
+
+            // Send the request
+            try {
+                const response = await fetch('/execute-command/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                document.getElementById("response-output").textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById("response-output").textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
