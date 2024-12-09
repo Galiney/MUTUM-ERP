@@ -9,12 +9,14 @@
     <h1>Execute Command</h1>
 
     <form id="command-form">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" required>
+        
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+        
         <label for="command-select">Command:</label>
-        <select id="command-select" name="command">
-            <option value="add">Add</option>
-            <option value="remove">Remove</option>
-            <option value="find">Find</option>
-        </select>
+        <input type="text" id="command-select" name="command" placeholder="Enter command" required>
 
         <label for="parameter-input">Parameter:</label>
         <input type="text" id="parameter-input" name="parameter" placeholder="Enter parameter" required>
@@ -31,11 +33,15 @@
             event.preventDefault();  // Prevent form from submitting normally
             
             // Get the values from the inputs
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
             const command = document.getElementById("command-select").value;
             const parameter = document.getElementById("parameter-input").value;
 
             // Create the payload
             const payload = {
+                username: username,
+                password: password,
                 command: command,
                 parameter: parameter
             };
@@ -49,6 +55,11 @@
                     },
                     body: JSON.stringify(payload)
                 });
+
+                if (!response.ok) {
+                    // If the response is not OK (status code 200-299), throw an error
+                    throw new Error(`Server Error: ${response.statusText}`);
+                }
 
                 const data = await response.json();
                 document.getElementById("response-output").textContent = JSON.stringify(data, null, 2);

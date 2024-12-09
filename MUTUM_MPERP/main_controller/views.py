@@ -1,9 +1,10 @@
 import json
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Accounts
 from .backend.accounts.user_account import User_account, UnauthorizedActionError
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 
@@ -67,6 +68,25 @@ def execute_command(request):
         return JsonResponse({'error': 'HTTP method not allowed'}, status=405)
     
 # Account
+def login_account(request):
+    print(f"request do login recebido:{request}")
+    if request.method == "POST":
+        username = json.loads(request.body).get("username")
+        print(f"username recebido:{username}")
+        password = json.loads(request.body).get("password")
+        print(f"password recebido:{password}")
+
+        # Tenta autenticar o usuário usando o backend personalizado
+        print(f"dados enviados ao authenticate:{request, username, password}")
+        user = authenticate(None, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return JsonResponse({"message": f"Account {user} loged in"}, status=201)
+        else:
+            return HttpResponse("Invalid login credentials", status=401)  # Login falhou
+    return JsonResponse({"message": f"Account not loged in"}, status=201)
+
 def add_account(request): #testado, funcional, necessita verificar lógica e segurança
 
     print('add_account executado')
@@ -93,6 +113,8 @@ def add_account(request): #testado, funcional, necessita verificar lógica e seg
             print("creator is None")
             new_user_account = User_account()
             print('account criado')
+            new_user_account.set_username(json.loads(request.body).get("username"))
+            new_user_account.set_password(json.loads(request.body).get("password"))
             account_data = new_user_account.to_dict()
             print('account to dict')
             Accounts.objects.create(user_data=account_data)
