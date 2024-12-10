@@ -1,12 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Command Executor</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Layout</title>
+  <style>
+    /* Configuração geral */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    #main-container {
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      background-color: #f0f0f0;
+      /* Cor de fundo geral */
+    }
+
+    /* Barra superior fixa */
+    #top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10vh;
+      /* 10% da altura da viewport */
+      background-color: #333;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      z-index: 10;
+    }
+
+    /* Área de conteúdo geral */
+    #content-area {
+      position: fixed;
+      top: 10vh;
+      /* Abaixo da barra superior */
+      left: 0;
+      width: 100%;
+      height: 90vh;
+      /* Resto da tela após a barra superior */
+      display: flex;
+    }
+
+    /* Barra lateral esquerda fixa */
+    #side-bar {
+      width: 20%;
+      /* Um terço da largura */
+      height: 100%;
+      background-color: #444;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 1rem;
+    }
+
+    /* Área principal fixa */
+    #main-content {
+      flex: 1;
+      /* Preenche o resto da largura */
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Barra superior interna fixa */
+    #inner-top-bar {
+      position: fixed;
+      top: 10vh;
+      /* Abaixo da barra superior */
+      left: 20%;
+      /* Após a barra lateral */
+      width: 80%;
+      /* Restante da largura */
+      height: 7vh;
+      /* Proporcional à altura */
+      background-color: #555;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 5;
+    }
+
+    /* Área de conteúdo com scroll */
+    #inner-content {
+      position: absolute;
+      top: 7vh;
+      /* Abaixo das duas barras */
+      left: 0%;
+      /* Após a barra lateral */
+      width: 100%;
+      /* Restante da largura */
+      height: calc(90vh - 7vh);
+      /* Altura disponível com a barra superior interna */
+      background-color: #fff;
+      overflow-y: auto;
+      /* Rolagem vertical */
+      padding: 2%;
+      /* Margem interna responsiva */
+      font-size: 0.9rem;
+    }
+
+    /*COMPONENTE COMPARTILHADO*/
+    .spin {
+      width: 100%;
+      height: 100%;
+      background-color: #00000073;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 99999;
+    }
+
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #FFF;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      position: relative;
+      animation: pulse 1s linear infinite;
+      z-index: 9999;
+    }
+
+    .loader:after {
+      content: '';
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border: 5px solid #FFF;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      animation: scaleUp 1s linear infinite;
+    }
+
+    @keyframes scaleUp {
+      0% {
+        transform: translate(-50%, -50%) scale(0)
+      }
+
+      60%,
+      100% {
+        transform: translate(-50%, -50%) scale(1)
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      60%,
+      100% {
+        transform: scale(1)
+      }
+
+      80% {
+        transform: scale(1.2)
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Execute Command</h1>
+  
+  <div id="main-container">
+    <!-- COMPONENTE COMPARTILHADO DE LOADING -->
+    <div class="spin">
+      <span class="loader"></span>
+    </div>
+    <!-- Barra superior -->
+    <div id="top-bar">
+      <div id="top-bar-right" class="top-bar-right">
+        <!-- Conteúdo dinâmico será inserido aqui -->
+      </div>
+    </div>
+
+    <!-- Área abaixo da barra superior -->
+    <div id="content-area">
+      <!-- Barra lateral esquerda -->
+      <div id="side-bar">
+        <button onclick="changeContent('login')">login</button>
+        <button onclick="changeContent('criar_conta')">Criar conta</button>
+        <button onclick="changeContent('remover_conta')">remover_conta</button>
+        <button onclick="changeContent('empresa')">Empresa</button>
+        <button onclick="changeContent('processos')">Processos</button>
+        <button onclick="changeContent('informacoes')">Informações</button>
+      </div>
+
+      <!-- Área principal que contém outras divisões -->
+      <div id="main-content">
+        <!-- Barra superior interna -->
+        <div id="inner-top-bar">
+          Barra Superior Interna
+        </div>
+
+        <!-- Área para conteúdo principal -->
+        <div id="inner-content">
+          <!-- Conteúdo principal -->
+          <pre id="response-output"></pre>
+          <p>Área de Conteúdo Principal com rolagem.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante
+            dapibus diam.</p>
+          <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.</p>
+          <p>Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla.</p>
+          <p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+          <p>Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh.</p>
+          <p>Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem.</p>
+          <p>Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non,
+            massa.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <h1>Execute Command</h1>
 
     <form id="command-form">
         <label for="username">Username</label>
@@ -25,48 +326,155 @@
     </form>
 
     <h2>Response:</h2>
-    <pre id="response-output"></pre>
+    <pre id="response-output"></pre> -->
 
-    <script>
-        // JavaScript to handle form submission and send the request
-        document.getElementById("command-form").addEventListener("submit", async function(event) {
-            event.preventDefault();  // Prevent form from submitting normally
-            
-            // Get the values from the inputs
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const command = document.getElementById("command-select").value;
-            const parameter = document.getElementById("parameter-input").value;
+  <script>
+    let isLoggedIn = false; // Simula o estado de login
 
-            // Create the payload
-            const payload = {
-                username: username,
-                password: password,
-                command: command,
-                parameter: parameter
-            };
+    document.addEventListener("DOMContentLoaded", function () {
+      updateTopBar();
+    });
 
-            // Send the request
-            try {
-                const response = await fetch('/execute-command/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
+    function loading(on) {
+      const loading = document.querySelector('.spin');
+      loading.style.display = on ? 'flex' : 'none';
+    }
 
-                if (!response.ok) {
-                    // If the response is not OK (status code 200-299), throw an error
-                    throw new Error(`Server Error: ${response.statusText}`);
-                }
+    function changeContent(option) {
+      const innerContent = document.getElementById("inner-content");
+      let content = "";
 
-                const data = await response.json();
-                document.getElementById("response-output").textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                document.getElementById("response-output").textContent = `Error: ${error.message}`;
-            }
+      switch (option) {
+        case "login":
+          content = `
+        <h3>login</h3>
+        <form id="command-form">
+          <label for="username">Username</label>
+          <input type="text" name="username" id="username" required>
+          
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" required>
+          
+          <label for="username_to_remove">informação de teste</label>
+          <input type="username_to_remove" name="username_to_remove" id="information" required>
+          
+          <button id="action" type="submit" command="login" parameter="account">Login</button>
+        </form>
+        <pre id="response-output"></pre>`;
+          break;
+        case "criar_conta":
+          content = `
+        <h3>criar_conta</h3>
+        <form id="command-form">
+          <label for="username">Username</label>
+          <input type="text" name="username" id="username" required>
+          
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" required>
+
+          <label for="username_to_remove">informação de teste</label>
+          <input type="username_to_remove" name="username_to_remove" id="information" required>
+          
+          <button id="action" type="submit" command="add" parameter="account" information="">Criar Conta</button>
+        </form>
+        <pre id="response-output"></pre>`;
+          break;
+        case "remover_conta":
+          content = `
+        <h3>remover_conta</h3>
+        <form id="command-form">
+          <label for="username">Username</label>
+          <input type="text" name="username" id="username" required>
+          
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" required>
+          
+          <label for="username_to_remove">usuario a ser removido</label>
+          <input type="username_to_remove" name="username_to_remove" id="information" required>
+
+          <button id="action" type="submit" command="remove" parameter="account">Remover Conta</button>
+        </form>
+        <pre id="response-output"></pre>`;
+          break;
+        case "empresa":
+          content = "<h2>Empresa</h2><p>Informações sobre a empresa.</p>";
+          break;
+        case "processos":
+          content = "<h2>Processos</h2><p>Detalhes dos processos em andamento.</p>";
+          break;
+        case "informacoes":
+          content = "<h2>Informações</h2><p>Informações gerais.</p>";
+          break;
+        default:
+          content = "<p>Selecione uma opção na barra lateral.</p>";
+      }
+
+      innerContent.innerHTML = content;
+
+      // Adiciona o evento ao novo formulário
+      const form = document.getElementById("command-form");
+      if (form) {
+        form.addEventListener("submit", async function (event) {
+          event.preventDefault(); // Impede o envio padrão do formulário
+
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+          const action = document.getElementById("action");
+          const information = document.getElementById("information").value;
+
+          const payload = {
+            username: username,
+            password: password,
+            command: action.getAttribute("command"),
+            parameter: action.getAttribute("parameter"),
+            information: information,
+          };
+
+          try {
+            loading(true);
+            const response = await fetch('/execute-command/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+              credentials: 'same-origin' // Adiciona os cookies à requisição
+            });
+
+
+            const data = await response.json();
+            document.getElementById("response-output").textContent = JSON.stringify(data, null, 2);
+            loading(false);
+          } catch (error) {
+            loading(false);
+            document.getElementById("response-output").textContent = `Error: ${error.message}`;
+          }
+          loading(false);
         });
-    </script>
+      }
+    }
+
+    function updateTopBar() {
+      const topBarRight = document.getElementById('top-bar-right');
+      topBarRight.innerHTML = ''; // Limpa o conteúdo anterior
+
+      if (isLoggedIn) {
+        topBarRight.innerHTML = `
+                    <span>${username}</span>
+                    <span>${companyName}</span>
+                    <button class="btn" onclick="logout()">Sair</button>
+                `;
+      } else {
+        topBarRight.innerHTML = `
+                    <button class="btn" onclick="changeContent('contas')">Logar</button>
+                `;
+      }
+    }
+
+    function logout() {
+      isLoggedIn = false;
+      updateTopBar();
+      document.getElementById('inner-content').innerHTML = '<p>Por favor, faça login.</p>';
+    }
+  </script>
 </body>
+
 </html>

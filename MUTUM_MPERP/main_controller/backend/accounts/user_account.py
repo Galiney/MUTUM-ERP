@@ -5,19 +5,7 @@ from ..mutum_data_types import Custom_data
 from ..enterprise import Enterprise
 import bcrypt
 from .permissions import Permissions
-
-
-class InvalidEmailFormatError(Exception):
-    """Custom exception raised when the email format is invalid."""
-    pass
-
-class InvalidDataFormatError(Exception):
-    """Custom exception raised when data format is invalid."""
-    pass
-
-class UnauthorizedActionError(Exception):
-    """Custom exception raised when an action is not authorized."""
-    pass
+from .errors import InvalidEmailFormatError, InvalidDataFormatError, UnauthorizedActionError
 
 class User_account:
     def __init__(self, creator=None) -> None:
@@ -36,7 +24,7 @@ class User_account:
 
         #system part
         self.__enterprises: List[Enterprise] = []
-        self.__permissions: Type[Permissions]
+        self.__permissions: Permissions = Permissions()
         print("user criado")
 
     # Authorization check
@@ -45,9 +33,9 @@ class User_account:
             #self.logger.warning("Unauthorized action attempt by non-creator.")
             raise UnauthorizedActionError("This action is only permitted by the account creator.")
         
-    def check_permission(self, permission: str) -> bool:
+    def check_permission(self, permission: str, role: str = 'system_administrator') -> bool: #!ARRUMAR
         """Verifica se o usuário tem a permissão necessária."""
-        if not self.permissions.check_permission(self.__role, permission):
+        if not self.__permissions.check_permission(role, permission):
             #self.logger.warning("Unauthorized action attempt: %s", permission)
             raise UnauthorizedActionError(f"Permission denied for action: {permission}")
         return True
@@ -162,7 +150,6 @@ class User_account:
 
     # Username methods
     def set_username(self, username: str) -> None:
-        self.__is_creator()
         self.__username = username
         #self.logger.info(f"Username set successfully: {username}")
 

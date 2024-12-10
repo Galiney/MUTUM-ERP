@@ -137,3 +137,5 @@ AUTHENTICATION_BACKENDS = [
     'main_controller.authentication_backend.CustomAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',  # Permite usar o backend de autenticação padrão (opcional)
 ]
+
+AUTH_USER_MODEL = 'main_controller.Accounts'

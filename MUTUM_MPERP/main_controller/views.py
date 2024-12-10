@@ -128,6 +128,8 @@ def add_account(request): #testado, funcional, necessita verificar lógica e seg
         print(f"creator is {user}")
         new_user_account = User_account(creator=creator)
         print('account criado')
+        new_user_account.set_username(json.loads(request.body).get("username"))
+        new_user_account.set_password(json.loads(request.body).get("password"))
         account_data = new_user_account.to_dict()
         print('account to dict')
         Accounts.objects.create(user_data=account_data)
@@ -145,51 +147,46 @@ def add_account(request): #testado, funcional, necessita verificar lógica e seg
         print(f"message: Error: {str(e)}")
         return JsonResponse({"message": f"Error: {str(e)}"}, status=500)
     
-def remove_account(request): #necessita testar e verificar lógica
-
+def remove_account(request):  # Função para remover conta
     print('remove_account executado')
 
     user = request.user
     print(f'user recebido: {user}')
 
-    action = "delete_account"
+    action = "remove_account"
     print(f'action recebido: {action}')
 
     if not user.is_authenticated:
         print('user not authenticated or not logged')
-        return JsonResponse({"message": "Authentication required to remove an account."}, status=401)
+        return JsonResponse({"message": "User not authenticated"}, status=401)
+    
+    print('user authenticated')
 
     try:
         # Verifica se o usuário tem permissão para remover a conta
         user.check_permission(action)
-        print(f'Usuário autorizado para {action}')
+        print(f"creator is {user}")
+        
+        # Recebe o username da conta a ser removida
+        account_data = json.loads(request.body)
+        username_to_remove = account_data.get("information")
+        
+        if not username_to_remove:
+            print("No username provided to remove.")
+            return JsonResponse({"message": "No username provided to remove."}, status=400)
 
-        # Obtém o identificador da conta a ser removida
-        account_id = request.GET.get('account_id')  # Supondo que o ID venha na query string
-        print(f'account_id recebido: {account_id}')
+        # Localiza a conta a ser removida
+        account_to_remove = Accounts.objects.filter(user_data__username=username_to_remove).first()
 
-        if not account_id:
-            print('Nenhum account_id fornecido')
-            return JsonResponse({"message": "Account ID is required."}, status=400)
+        if not account_to_remove:
+            print(f"Account with username {username_to_remove} not found.")
+            return JsonResponse({"message": f"Account with username {username_to_remove} not found."}, status=404)
 
-        # Verifica se a conta existe
-        try:
-            account = Accounts.objects.get(id=account_id)
-            print(f'Conta encontrada: {account}')
-        except Accounts.DoesNotExist:
-            print(f'Account com id {account_id} não encontrada')
-            return JsonResponse({"message": "Account not found."}, status=404)
-
-        # Verifica se o usuário tem relação com a conta antes de removê-la
-        if account.user_data.get("creator") != str(user.id):
-            print(f'Usuário {user.id} não é o criador da conta {account_id}')
-            return JsonResponse({"message": "You do not have permission to delete this account."}, status=403)
-
-        # Remove a conta
-        account.delete()
-        print(f'Account com id {account_id} removida com sucesso')
-
-        return JsonResponse({"message": "Account removed successfully."}, status=200)
+        # Remover a conta
+        account_to_remove.delete()
+        print(f"Account with username {username_to_remove} removed.")
+        
+        return JsonResponse({"message": f"Account with username {username_to_remove} removed successfully."}, status=200)
 
     except UnauthorizedActionError as e:
         # Caso o usuário não tenha permissão
@@ -199,7 +196,6 @@ def remove_account(request): #necessita testar e verificar lógica
         # Outros erros
         print(f"message: Error: {str(e)}")
         return JsonResponse({"message": f"Error: {str(e)}"}, status=500)
-
 
 
 def find_account(request):

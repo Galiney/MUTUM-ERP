@@ -1,17 +1,22 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from main_controller.backend.accounts.user_account import User_account
 import datetime
 from typing import List, Optional, Dict
 
 
-class Accounts(models.Model):
+class Accounts(AbstractUser):
     user_data = models.JSONField(
         null=False, blank=False,
         verbose_name="Dados do Usuário"
     )
+    username = models.CharField(max_length=150, unique=True, blank=True, null=True)
+    password = models.CharField(max_length=128, default='', blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Última Atualização")
     last_login = models.DateTimeField(auto_now=True)
+    REQUIRED_FIELDS = []
+    USERNAME_FIELD = 'username'
 
     def save_user_account(self, user_account_instance: User_account):
         """
